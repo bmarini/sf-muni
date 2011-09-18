@@ -23,7 +23,13 @@ class RouteList < Goliath::API
     doc = Nokogiri::XML(http.response)
     result = doc.css('route').to_a.map { |n| { tag: n['tag'], title: n['title'] } }
 
-    [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, result.to_json ]
+    headers = {
+      'X-Goliath'     => 'Proxy',
+      'Content-Type'  => 'application/javascript',
+      'Cache-Control' => 'max-age=86400, public'
+    }
+
+    [ 200, headers, result.to_json ]
   end
 end
 
@@ -62,7 +68,13 @@ class RouteConfig < Goliath::API
       }
     end
 
-    [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, directions.to_json ]
+    headers = {
+      'X-Goliath'     => 'Proxy',
+      'Content-Type'  => 'application/javascript',
+      'Cache-Control' => 'max-age=86400, public'
+    }
+
+    [ 200, headers, directions.to_json ]
   end
 end
 
