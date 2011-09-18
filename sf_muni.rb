@@ -12,6 +12,8 @@ BASE_URL = 'http://webservices.nextbus.com/service/publicXMLFeed'
 #   ...
 
 class RouteList < Goliath::API
+  use Goliath::Rack::JSONP
+
   def response(env)
     url = BASE_URL + '?command=routeList&a=sf-muni'
     http = EM::HttpRequest.new(url).get
@@ -37,6 +39,7 @@ end
 #     ...
 
 class RouteConfig < Goliath::API
+  use Goliath::Rack::JSONP
   use Goliath::Rack::Params
   use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
 
@@ -82,6 +85,7 @@ end
 # </body>
 
 class Predictions < Goliath::API
+  use Goliath::Rack::JSONP
   use Goliath::Rack::Params
   use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
   use Goliath::Rack::Validation::RequiredParam, { :key => 's', :message => 'Must be a stop tag' }
