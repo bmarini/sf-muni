@@ -1,3 +1,5 @@
+require_relative 'common'
+
 # curl 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=sf-muni&r=N&s=5240'
 # <?xml version="1.0" encoding="utf-8" ?> 
 # <body copyright="All data copyright San Francisco Muni 2011.">
@@ -7,8 +9,6 @@
 #   <prediction epochTime="1316371372380" seconds="571" minutes="9" isDeparture="false" dirTag="N__OB1" vehicle="1520" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
 #   <prediction epochTime="1316372035377" seconds="1234" minutes="20" isDeparture="false" dirTag="N__OB1" vehicle="1535" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
 #   <prediction epochTime="1316372908769" seconds="2107" minutes="35" isDeparture="false" dirTag="N__OB1" vehicle="1470" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
-require_relative 'common'
-
 #   <prediction epochTime="1316373459579" seconds="2658" minutes="44" isDeparture="false" dirTag="N__OB1" vehicle="1422" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
 #   </direction>
 # <message text="www.sfmta.com or&#10;311 for Muni info."/>
