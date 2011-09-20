@@ -6,7 +6,7 @@ require 'nokogiri'
 require 'haml'
 
 require_relative 'lib/common'
-require_relative 'lib/routelist'
+require_relative 'lib/route_list'
 require_relative 'lib/routeconfig'
 require_relative 'lib/predictions'
 

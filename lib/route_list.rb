@@ -11,12 +11,8 @@ class RouteList < Goliath::API
   use Goliath::Rack::JSONP
 
   def response(env)
-    url = base_url + '?command=routeList&a=sf-muni'
-    http = EM::HttpRequest.new(url).get
-
-    logger.debug "Received #{http.response_header.status} from NextBus"
-
-    doc = Nokogiri::XML(http.response)
+    res    = upstream_response(env)
+    doc    = Nokogiri::XML(res)
     result = doc.css('route').to_a.map { |n| { tag: n['tag'], title: n['title'] } }
 
     headers = {
@@ -27,4 +23,15 @@ class RouteList < Goliath::API
 
     [ 200, headers, result.to_json ]
   end
+
+  def upstream_response(env)
+    http = EM::HttpRequest.new(url).get
+    logger.debug "Received #{http.response_header.status} from NextBus"
+    http.response
+  end
+
+  def url
+    base_url + '?command=routeList&a=sf-muni'
+  end
+
 end

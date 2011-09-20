@@ -8,3 +8,8 @@ gem 'nokogiri'
 gem 'tilt'
 gem 'haml'
 gem 'foreman'
+
+group :test, :develop do
+  gem 'rake', '~> 0.9.2'
+  gem 'rspec', '~> 2.6.0'
+end
