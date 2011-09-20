@@ -18,13 +18,30 @@ class RouteConfig < Goliath::API
   use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
 
   def response(env)
-    url = base_url + "?command=routeConfig&a=sf-muni&r=#{params[:r]}"
+    res = upstream_response(env)
+    doc = parse_xml(res)
+    hsh = transform(doc)
+
+    headers = {
+      'X-Goliath'     => 'Proxy',
+      'Content-Type'  => 'application/javascript',
+      'Cache-Control' => 'max-age=86400, public'
+    }
+
+    [ 200, headers, hsh.to_json ]
+  end
+
+  def upstream_response(env)
     http = EM::HttpRequest.new(url).get
-
     logger.debug "Received #{http.response_header.status} from NextBus"
+    http.response
+  end
 
-    doc = Nokogiri::XML(http.response)
+  def url
+    base_url + "?command=routeConfig&a=sf-muni&r=#{params[:r]}"
+  end
 
+  def transform(doc)
     stops = doc.css('route > stop').to_a.map do |n|
       { id: n['stopId'], tag: n['tag'], title: n['title'], lat: n['lat'], lon: n['lon'] }
     end
@@ -35,13 +52,5 @@ class RouteConfig < Goliath::API
         stops: direction.css('stop').to_a.map { |stop| stops.detect { |s| stop[:tag] == s[:tag] } }
       }
     end
-
-    headers = {
-      'X-Goliath'     => 'Proxy',
-      'Content-Type'  => 'application/javascript',
-      'Cache-Control' => 'max-age=86400, public'
-    }
-
-    [ 200, headers, directions.to_json ]
   end
 end

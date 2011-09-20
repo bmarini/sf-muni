@@ -7,7 +7,7 @@ require 'haml'
 
 require_relative 'lib/common'
 require_relative 'lib/route_list'
-require_relative 'lib/routeconfig'
+require_relative 'lib/route_config'
 require_relative 'lib/predictions'
 
 class Template < Goliath::API

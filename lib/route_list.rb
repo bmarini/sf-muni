@@ -11,9 +11,9 @@ class RouteList < Goliath::API
   use Goliath::Rack::JSONP
 
   def response(env)
-    res    = upstream_response(env)
-    doc    = Nokogiri::XML(res)
-    result = doc.css('route').to_a.map { |n| { tag: n['tag'], title: n['title'] } }
+    res = upstream_response(env)
+    doc = parse_xml(res)
+    hsh = transform(doc)
 
     headers = {
       'X-Goliath'     => 'Proxy',
@@ -21,7 +21,7 @@ class RouteList < Goliath::API
       'Cache-Control' => 'max-age=86400, public'
     }
 
-    [ 200, headers, result.to_json ]
+    [ 200, headers, hsh.to_json ]
   end
 
   def upstream_response(env)
@@ -34,4 +34,7 @@ class RouteList < Goliath::API
     base_url + '?command=routeList&a=sf-muni'
   end
 
+  def transform(doc)
+    doc.css('route').to_a.map { |n| { tag: n['tag'], title: n['title'] } }
+  end
 end
