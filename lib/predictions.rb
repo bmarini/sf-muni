@@ -27,14 +27,25 @@ class Predictions < Goliath::API
   use Goliath::Rack::Validation::RequiredParam, { :key => 's', :message => 'Must be a stop tag' }
 
   def response(env)
-    url = base_url + "?command=predictions&a=sf-muni&r=#{params[:r]}&s=#{params[:s]}"
+    res = upstream_response
+    doc = parse_xml(res)
+    hsh = transform(doc)
+
+    [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, hsh.to_json ]
+  end
+
+  def upstream_response
     http = EM::HttpRequest.new(url).get
-
     logger.debug "Received #{http.response_header.status} from NextBus"
+    http.response
+  end
 
-    doc = Nokogiri::XML(http.response)
+  def url
+    base_url + "?command=predictions&a=sf-muni&r=#{params[:r]}&s=#{params[:s]}"
+  end
 
-    predictions = doc.css('predictions').to_a.map do |n|
+  def transform(doc)
+    doc.css('predictions').to_a.map do |n|
       {
         routeTitle: n['routeTitle'],
         stopTitle:  n['stopTitle'],
@@ -48,7 +59,5 @@ class Predictions < Goliath::API
         end
       }
     end
-
-    [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, predictions.to_json ]
   end
 end

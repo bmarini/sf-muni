@@ -7,7 +7,7 @@ describe SfMuni do
   describe "/routelist" do
     before do
       RouteList.any_instance.stub(:upstream_response).and_return <<-EOS
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8" ?>
 <body copyright="All data copyright San Francisco Muni 2011.">
 <route tag="F" title="F-Market &amp; Wharves"/>
 <route tag="J" title="J-Church"/>
@@ -33,7 +33,7 @@ describe SfMuni do
   describe "/routeconfig" do
     before do
       RouteConfig.any_instance.stub(:upstream_response).and_return <<-EOS
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8" ?>
 <body copyright="All data copyright San Francisco Muni 2011.">
 <route tag="N" title="N-Judah" color="003399" oppositeColor="ffffff" latMin="37.7601699" latMax="37.7932299" lonMin="-122.5092" lonMax="-122.38798">
 <stop tag="5240" title="King St &amp; 4th St" lat="37.7760599" lon="-122.39436" stopId="15240"/>
@@ -66,6 +66,45 @@ describe SfMuni do
         end
       end
     end
+  end
 
+  describe "/predictions" do
+    before do
+      Predictions.any_instance.stub(:upstream_response).and_return <<-EOS
+<?xml version="1.0" encoding="utf-8" ?>
+<body copyright="All data copyright San Francisco Muni 2011.">
+<predictions agencyTitle="San Francisco Muni" routeTitle="N-Judah" routeTag="N" stopTitle="Sunset Tunnel East Portal" stopTag="7252">
+  <direction title="Outbound to Ocean Beach">
+  <prediction epochTime="1316371096231" seconds="295" minutes="4" isDeparture="false" dirTag="N__OB1" vehicle="1405" block="9701" tripTag="4501126" />
+  <prediction epochTime="1316371372380" seconds="571" minutes="9" isDeparture="false" dirTag="N__OB1" vehicle="1520" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
+  <prediction epochTime="1316372035377" seconds="1234" minutes="20" isDeparture="false" dirTag="N__OB1" vehicle="1535" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
+  <prediction epochTime="1316372908769" seconds="2107" minutes="35" isDeparture="false" dirTag="N__OB1" vehicle="1470" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
+  <prediction epochTime="1316373459579" seconds="2658" minutes="44" isDeparture="false" dirTag="N__OB1" vehicle="1422" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
+  </direction>
+<message text="www.sfmta.com or&#10;311 for Muni info."/>
+<message text="No Elevator at&#10;Powell Station"/>
+<message text="PROOF OF PAYMENT&#10;is required when&#10;on a Muni vehicle&#10;or in a station."/>
+<message text="Save time &amp; money!&#10;Get a Clipper card"/>
+</predictions>
+</body>
+      EOS
+    end
+
+    it 'lists predictions for a route and stop' do
+      with_api(SfMuni) do
+        get_request({path: '/predictions', query: { r: 'N', s: '5240' } }, err) do |c|
+          res = JSON.parse(c.response)
+          res.should == [
+            {
+              "routeTitle" => "N-Judah",
+              "stopTitle" => "Sunset Tunnel East Portal",
+              "directions" => [
+                { "title" => "Outbound to Ocean Beach", "predictions" => [ 295, 571, 1234, 2107, 2658 ] }
+              ]
+            }
+          ]
+        end
+      end
+    end
   end
 end
