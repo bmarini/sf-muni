@@ -1,4 +1,4 @@
-require_relative 'common'
+require_relative 'base'
 
 # curl 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=sf-muni&r=N&s=5240'
 # <?xml version="1.0" encoding="utf-8" ?> 
@@ -20,7 +20,7 @@ require_relative 'common'
 
 module SfMuni
   class Predictions < Goliath::API
-    include Common
+    include Base
 
     use Goliath::Rack::JSONP
     use Goliath::Rack::Params
@@ -33,12 +33,6 @@ module SfMuni
       hsh = transform(doc)
 
       [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, hsh.to_json ]
-    end
-
-    def upstream_response
-      http = EM::HttpRequest.new(url).get
-      logger.debug "Received #{http.response_header.status} from NextBus"
-      http.response
     end
 
     def url

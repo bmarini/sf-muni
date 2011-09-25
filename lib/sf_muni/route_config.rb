@@ -1,4 +1,4 @@
-require_relative 'common'
+require_relative 'base'
 
 # curl 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=sf-muni&r=N'
 # <?xml version="1.0" encoding="utf-8" ?> 
@@ -12,14 +12,14 @@ require_relative 'common'
 
 module SfMuni
   class RouteConfig < Goliath::API
-    include Common
+    include Base
 
     use Goliath::Rack::JSONP
     use Goliath::Rack::Params
     use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
 
     def response(env)
-      res = upstream_response(env)
+      res = upstream_response
       doc = parse_xml(res)
       hsh = transform(doc)
 
@@ -30,12 +30,6 @@ module SfMuni
       }
 
       [ 200, headers, hsh.to_json ]
-    end
-
-    def upstream_response(env)
-      http = EM::HttpRequest.new(url).get
-      logger.debug "Received #{http.response_header.status} from NextBus"
-      http.response
     end
 
     def url

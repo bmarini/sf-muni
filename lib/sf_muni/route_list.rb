@@ -1,4 +1,4 @@
-require_relative 'common'
+require_relative 'base'
 
 # curl 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=sf-muni'
 # <?xml version="1.0" encoding="utf-8" ?> 
@@ -8,7 +8,7 @@ require_relative 'common'
 
 module SfMuni
   class RouteList < Goliath::API
-    include Common
+    include Base
     use Goliath::Rack::JSONP
 
     def response(env)
@@ -23,12 +23,6 @@ module SfMuni
       }
 
       [ 200, headers, hsh.to_json ]
-    end
-
-    def upstream_response(env)
-      http = EM::HttpRequest.new(url).get
-      logger.debug "Received #{http.response_header.status} from NextBus"
-      http.response
     end
 
     def url
