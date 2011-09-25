@@ -11,10 +11,6 @@ module SfMuni
     use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
     use Goliath::Rack::Validation::RequiredParam, { :key => 's', :message => 'Must be a stop tag' }
 
-    def response_headers
-      {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}
-    end
-
     def url
       base_url + "?command=predictions&a=sf-muni&r=#{params[:r]}&s=#{params[:s]}"
     end

@@ -20,6 +20,13 @@ module SfMuni
       http.response
     end
 
+    def response_headers
+      {
+        'X-Goliath'    => 'Proxy',
+        'Content-Type' => 'application/javascript'
+      }
+    end
+
     def parse_xml(res)
       Nokogiri::XML(res)
     end
