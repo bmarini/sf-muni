@@ -18,18 +18,12 @@ module SfMuni
     use Goliath::Rack::Params
     use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
 
-    def response(env)
-      res = upstream_response
-      doc = parse_xml(res)
-      hsh = transform(doc)
-
-      headers = {
+    def response_headers
+      {
         'X-Goliath'     => 'Proxy',
         'Content-Type'  => 'application/javascript',
         'Cache-Control' => 'max-age=86400, public'
       }
-
-      [ 200, headers, hsh.to_json ]
     end
 
     def url

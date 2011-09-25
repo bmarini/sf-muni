@@ -27,12 +27,8 @@ module SfMuni
     use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
     use Goliath::Rack::Validation::RequiredParam, { :key => 's', :message => 'Must be a stop tag' }
 
-    def response(env)
-      res = upstream_response
-      doc = parse_xml(res)
-      hsh = transform(doc)
-
-      [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, hsh.to_json ]
+    def response_headers
+      {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}
     end
 
     def url
