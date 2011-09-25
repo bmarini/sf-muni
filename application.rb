@@ -5,7 +5,7 @@ require 'json/ext'
 require 'nokogiri'
 require 'haml'
 
-$:.unshift File.expand_path('../lib')
+$:.unshift File.expand_path('../lib', __FILE__)
 require 'sf_muni'
 
 class Template < Goliath::API

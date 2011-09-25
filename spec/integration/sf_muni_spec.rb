@@ -5,18 +5,7 @@ describe SfMuni do
 
   describe "/routelist" do
     before do
-      SfMuni::RouteList.any_instance.stub(:upstream_response).and_return <<-EOS
-<?xml version="1.0" encoding="utf-8" ?>
-<body copyright="All data copyright San Francisco Muni 2011.">
-<route tag="F" title="F-Market &amp; Wharves"/>
-<route tag="J" title="J-Church"/>
-<route tag="KT" title="KT-Ingleside/Third Street"/>
-<route tag="L" title="L-Taraval"/>
-<route tag="M" title="M-Ocean View"/>
-<route tag="N" title="N-Judah"/>
-<route tag="NX" title="NX-N Express"/>
-</body>
-      EOS
+      SfMuni::RouteList.any_instance.stub(:upstream_response).and_return( response_for('route_list') )
     end
 
     it 'lists routes' do
@@ -31,25 +20,7 @@ describe SfMuni do
 
   describe "/routeconfig" do
     before do
-      SfMuni::RouteConfig.any_instance.stub(:upstream_response).and_return <<-EOS
-<?xml version="1.0" encoding="utf-8" ?>
-<body copyright="All data copyright San Francisco Muni 2011.">
-<route tag="N" title="N-Judah" color="003399" oppositeColor="ffffff" latMin="37.7601699" latMax="37.7932299" lonMin="-122.5092" lonMax="-122.38798">
-<stop tag="5240" title="King St &amp; 4th St" lat="37.7760599" lon="-122.39436" stopId="15240"/>
-<stop tag="5237" title="King St &amp; 2nd St" lat="37.7796199" lon="-122.38982" stopId="15237"/>
-<stop tag="5223" title="Judah St &amp; La Playa St" lat="37.7601699" lon="-122.50878" stopId="15223"/>
-<stop tag="5216" title="Judah St &amp; 46th Ave" lat="37.7603899" lon="-122.50606" stopId="15216"/>
-<direction tag="N__OB2" title="Outbound to Ocean Beach" name="Outbound" useForUI="true">
-  <stop tag="5240" />
-  <stop tag="5237" />
-</direction>
-<direction tag="N__IB3" title="Inbound to Downtown/Caltrain" name="Inbound" useForUI="true">
-  <stop tag="5223" />
-  <stop tag="5216" />
-</direction>
-</route>
-</body>
-      EOS
+      SfMuni::RouteConfig.any_instance.stub(:upstream_response).and_return(response_for('route_config'))
     end
 
     it 'lists stops for a route' do
@@ -69,24 +40,7 @@ describe SfMuni do
 
   describe "/predictions" do
     before do
-      SfMuni::Predictions.any_instance.stub(:upstream_response).and_return <<-EOS
-<?xml version="1.0" encoding="utf-8" ?>
-<body copyright="All data copyright San Francisco Muni 2011.">
-<predictions agencyTitle="San Francisco Muni" routeTitle="N-Judah" routeTag="N" stopTitle="Sunset Tunnel East Portal" stopTag="7252">
-  <direction title="Outbound to Ocean Beach">
-  <prediction epochTime="1316371096231" seconds="295" minutes="4" isDeparture="false" dirTag="N__OB1" vehicle="1405" block="9701" tripTag="4501126" />
-  <prediction epochTime="1316371372380" seconds="571" minutes="9" isDeparture="false" dirTag="N__OB1" vehicle="1520" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
-  <prediction epochTime="1316372035377" seconds="1234" minutes="20" isDeparture="false" dirTag="N__OB1" vehicle="1535" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
-  <prediction epochTime="1316372908769" seconds="2107" minutes="35" isDeparture="false" dirTag="N__OB1" vehicle="1470" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
-  <prediction epochTime="1316373459579" seconds="2658" minutes="44" isDeparture="false" dirTag="N__OB1" vehicle="1422" block="NUNSCHED" tripTag="NsunUNSCHEDO" />
-  </direction>
-<message text="www.sfmta.com or&#10;311 for Muni info."/>
-<message text="No Elevator at&#10;Powell Station"/>
-<message text="PROOF OF PAYMENT&#10;is required when&#10;on a Muni vehicle&#10;or in a station."/>
-<message text="Save time &amp; money!&#10;Get a Clipper card"/>
-</predictions>
-</body>
-      EOS
+      SfMuni::Predictions.any_instance.stub(:upstream_response).and_return(response_for('predictions'))
     end
 
     it 'lists predictions for a route and stop' do
