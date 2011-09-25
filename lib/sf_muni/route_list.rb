@@ -1,10 +1,6 @@
 require_relative 'base'
 
 # curl 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=sf-muni'
-# <?xml version="1.0" encoding="utf-8" ?> 
-# <body copyright="All data copyright San Francisco Muni 2011.">
-#   <route tag="F" title="F-Market &amp; Wharves"/>
-#   ...
 
 module SfMuni
   class RouteList < Goliath::API
