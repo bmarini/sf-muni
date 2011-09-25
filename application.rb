@@ -5,10 +5,8 @@ require 'json/ext'
 require 'nokogiri'
 require 'haml'
 
-require_relative 'lib/common'
-require_relative 'lib/route_list'
-require_relative 'lib/route_config'
-require_relative 'lib/predictions'
+$:.unshift File.expand_path('../lib')
+require 'sf_muni'
 
 class Template < Goliath::API
   include Goliath::Rack::Templates
@@ -22,14 +20,14 @@ class Template < Goliath::API
   end
 end
 
-class SfMuni < Goliath::API
+class Application < Goliath::API
   map '/version' do
     run Proc.new { |env| [200, {"Content-Type" => "text/html"}, ["Version 0.0.1"]] }
   end
 
-  get '/routelist', RouteList
-  get '/routeconfig', RouteConfig
-  get '/predictions', Predictions
+  get '/routelist', SfMuni::RouteList
+  get '/routeconfig', SfMuni::RouteConfig
+  get '/predictions', SfMuni::Predictions
 
   get '/', Template
 

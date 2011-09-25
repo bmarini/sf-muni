@@ -18,46 +18,48 @@ require_relative 'common'
 # </predictions>
 # </body>
 
-class Predictions < Goliath::API
-  include Common
+module SfMuni
+  class Predictions < Goliath::API
+    include Common
 
-  use Goliath::Rack::JSONP
-  use Goliath::Rack::Params
-  use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
-  use Goliath::Rack::Validation::RequiredParam, { :key => 's', :message => 'Must be a stop tag' }
+    use Goliath::Rack::JSONP
+    use Goliath::Rack::Params
+    use Goliath::Rack::Validation::RequiredParam, { :key => 'r', :message => 'Must be a route tag' }
+    use Goliath::Rack::Validation::RequiredParam, { :key => 's', :message => 'Must be a stop tag' }
 
-  def response(env)
-    res = upstream_response
-    doc = parse_xml(res)
-    hsh = transform(doc)
+    def response(env)
+      res = upstream_response
+      doc = parse_xml(res)
+      hsh = transform(doc)
 
-    [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, hsh.to_json ]
-  end
+      [ 200, {'X-Goliath' => 'Proxy', 'Content-Type' => 'application/javascript'}, hsh.to_json ]
+    end
 
-  def upstream_response
-    http = EM::HttpRequest.new(url).get
-    logger.debug "Received #{http.response_header.status} from NextBus"
-    http.response
-  end
+    def upstream_response
+      http = EM::HttpRequest.new(url).get
+      logger.debug "Received #{http.response_header.status} from NextBus"
+      http.response
+    end
 
-  def url
-    base_url + "?command=predictions&a=sf-muni&r=#{params[:r]}&s=#{params[:s]}"
-  end
+    def url
+      base_url + "?command=predictions&a=sf-muni&r=#{params[:r]}&s=#{params[:s]}"
+    end
 
-  def transform(doc)
-    doc.css('predictions').to_a.map do |n|
-      {
-        routeTitle: n['routeTitle'],
-        stopTitle:  n['stopTitle'],
-        directions: n.css('direction').to_a.map do |dir|
-          {
-            title: dir['title'],
-            predictions: dir.css('prediction').to_a.map do |pre|
-              pre['seconds'].to_i
-            end
-          }
-        end
-      }
+    def transform(doc)
+      doc.css('predictions').to_a.map do |n|
+        {
+          routeTitle: n['routeTitle'],
+          stopTitle:  n['stopTitle'],
+          directions: n.css('direction').to_a.map do |dir|
+            {
+              title: dir['title'],
+              predictions: dir.css('prediction').to_a.map do |pre|
+                pre['seconds'].to_i
+              end
+            }
+          end
+        }
+      end
     end
   end
 end

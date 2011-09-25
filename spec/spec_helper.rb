@@ -4,6 +4,7 @@ Bundler.setup
 Bundler.require
 
 require 'goliath/test_helper'
+require_relative '../application'
 
 Goliath.env = :test
 

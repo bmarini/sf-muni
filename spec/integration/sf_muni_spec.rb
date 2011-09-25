@@ -1,12 +1,11 @@
 require 'spec_helper'
-require_relative '../../sf_muni'
 
 describe SfMuni do
   let(:err) { Proc.new { fail "API request failed" } }
 
   describe "/routelist" do
     before do
-      RouteList.any_instance.stub(:upstream_response).and_return <<-EOS
+      SfMuni::RouteList.any_instance.stub(:upstream_response).and_return <<-EOS
 <?xml version="1.0" encoding="utf-8" ?>
 <body copyright="All data copyright San Francisco Muni 2011.">
 <route tag="F" title="F-Market &amp; Wharves"/>
@@ -21,7 +20,7 @@ describe SfMuni do
     end
 
     it 'lists routes' do
-      with_api(SfMuni) do
+      with_api(Application) do
         get_request({path: '/routelist'}, err) do |c|
           res = JSON.parse(c.response)
           res.map { |r| r['tag'] }.should == %w[ F J KT L M N NX ]
@@ -32,7 +31,7 @@ describe SfMuni do
 
   describe "/routeconfig" do
     before do
-      RouteConfig.any_instance.stub(:upstream_response).and_return <<-EOS
+      SfMuni::RouteConfig.any_instance.stub(:upstream_response).and_return <<-EOS
 <?xml version="1.0" encoding="utf-8" ?>
 <body copyright="All data copyright San Francisco Muni 2011.">
 <route tag="N" title="N-Judah" color="003399" oppositeColor="ffffff" latMin="37.7601699" latMax="37.7932299" lonMin="-122.5092" lonMax="-122.38798">
@@ -54,7 +53,7 @@ describe SfMuni do
     end
 
     it 'lists stops for a route' do
-      with_api(SfMuni) do
+      with_api(Application) do
         get_request({path: '/routeconfig', query: { r: 'N' } }, err) do |c|
           res = JSON.parse(c.response)
 
@@ -70,7 +69,7 @@ describe SfMuni do
 
   describe "/predictions" do
     before do
-      Predictions.any_instance.stub(:upstream_response).and_return <<-EOS
+      SfMuni::Predictions.any_instance.stub(:upstream_response).and_return <<-EOS
 <?xml version="1.0" encoding="utf-8" ?>
 <body copyright="All data copyright San Francisco Muni 2011.">
 <predictions agencyTitle="San Francisco Muni" routeTitle="N-Judah" routeTag="N" stopTitle="Sunset Tunnel East Portal" stopTag="7252">
@@ -91,7 +90,7 @@ describe SfMuni do
     end
 
     it 'lists predictions for a route and stop' do
-      with_api(SfMuni) do
+      with_api(Application) do
         get_request({path: '/predictions', query: { r: 'N', s: '5240' } }, err) do |c|
           res = JSON.parse(c.response)
           res.should == [
