@@ -13,7 +13,7 @@ class Template < Goliath::API
 
   use( Rack::Static,
     :root => Goliath::Application.app_path('public'),
-    :urls => ['/css', '/js'])
+    :urls => ['/css', '/js', '/templates'])
 
   def response(env)
     [ 200, {"Content-Type" => "text/html"}, haml(:index) ]
