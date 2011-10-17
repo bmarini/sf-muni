@@ -15,13 +15,22 @@
         return this.partial('templates/routes.mustache');
       });
     });
-    this.get('#/routes/:tag', function(app) {
+    this.get('#/routes/:route', function(app) {
       return this.muni({
         command: 'routeConfig',
-        r: app.params.tag
+        r: app.params.route
       }, function(response) {
         this.response = response;
         return this.partial('templates/route.mustache');
+      });
+    });
+    this.get('#/stops/:stop', function(app) {
+      return this.muni({
+        command: 'predictions',
+        stopId: app.params.stop
+      }, function(response) {
+        this.response = response;
+        return this.partial('templates/stop.mustache');
       });
     });
     return this.get('#/', function(app) {

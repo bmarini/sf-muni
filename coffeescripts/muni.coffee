@@ -10,9 +10,12 @@ Muni = Sammy ->
   @get '#/routes', ( app ) ->
     @muni command : 'routeList', ( @response ) -> @partial 'templates/routes.mustache'
   
-  @get '#/routes/:tag', ( app ) ->
-    @muni command : 'routeConfig', r : app.params.tag, ( @response ) -> @partial 'templates/route.mustache'
-      
+  @get '#/routes/:route', ( app ) ->
+    @muni command : 'routeConfig', r : app.params.route, ( @response ) -> @partial 'templates/route.mustache'
+  
+  @get '#/stops/:stop', ( app ) ->
+    @muni command : 'predictions', stopId : app.params.stop, ( @response ) -> @partial 'templates/stop.mustache'
+    
   @get '#/', ( app ) ->
     @redirect '#/routes'
 

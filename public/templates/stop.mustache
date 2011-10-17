@@ -1,0 +1,32 @@
+{{#response}}
+{{#predictions}}
+<a href="#/routes/{{routeTag}}">Back</a>
+<h2>{{stopTitle}}</h2>
+<h2>{{routeTitle}}</h2>
+{{#direction}}
+<h3>{{title}}</h3>
+<ul>
+	{{#prediction}}
+	<li>
+		{{minutes}}
+		{{#affectedByLayover}}
+		* a bit behind
+		{{/affectedByLayover}}
+		{{#slowness}}
+		* {{slowness}} slow
+		{{/slowness}}
+	</li>
+	{{/prediction}}
+</ul>
+{{/direction}}
+<h3>Messages</h3>
+<ul>
+	{{#message}}
+	{{#text}}
+	<li>{{.}}</li>
+	{{/text}}
+	{{/message}}
+</ul>
+{{/predictions}}
+<p>{{copyright}}</p>
+{{/response}}

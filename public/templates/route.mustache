@@ -1,11 +1,14 @@
 {{#response}}
 {{#route}}
-<h2 style="background-color:#{{color}};color:#FFF;">{{title}}</h2>
+<h2 style="background-color:#{{color}};color:#{{oppositeColor}};">{{title}}</h2>
 <a href="#/routes">Back</a>
 <ul>
+	{{#stop}}
 	<li>
-		<a href=""></a>
+		<a href="#/stops/{{stopId}}">{{title}}</a>
 	</li>
+	{{/stop}}
 </ul>
 {{/route}}
+<p>{{copyright}}</p>
 {{/response}}
