@@ -10,6 +10,9 @@
   @helper 'favorite', ( route, stop ) ->
     @cache stop, route
   
+  @helper 'unfavorite', ( route, stop ) ->
+    @store( 'cache' ).clear stop 
+  
   @helper 'favorites', ->
     { stop : key, route : @cache key } for key in @store( 'cache' ).keys( )
     
@@ -27,6 +30,10 @@
   
   @get '#/favorite', ( app ) ->
     @favorite stop.split( '|' )... for stop in $.makeArray app.params.stops
+    @redirect '#/favorites'
+  
+  @get '#/unfavorite', ( app ) ->
+    @unfavorite stop.split( '|' )... for stop in $.makeArray app.params.stops
     @redirect '#/favorites'
   
   @get '#/favorites', ( app ) ->

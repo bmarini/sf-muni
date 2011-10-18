@@ -10,6 +10,9 @@
     this.helper('favorite', function(route, stop) {
       return this.cache(stop, route);
     });
+    this.helper('unfavorite', function(route, stop) {
+      return this.store('cache').clear(stop);
+    });
     this.helper('favorites', function() {
       var key, _i, _len, _ref, _results;
       _ref = this.store('cache').keys();
@@ -59,6 +62,15 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         stop = _ref[_i];
         this.favorite.apply(this, stop.split('|'));
+      }
+      return this.redirect('#/favorites');
+    });
+    this.get('#/unfavorite', function(app) {
+      var stop, _i, _len, _ref;
+      _ref = $.makeArray(app.params.stops);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        stop = _ref[_i];
+        this.unfavorite.apply(this, stop.split('|'));
       }
       return this.redirect('#/favorites');
     });
