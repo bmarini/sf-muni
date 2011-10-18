@@ -1,7 +1,9 @@
 <h1>My Favorites</h1>
 <ul>
 	{{#favorites}}
-	<li>Favorite stop</li>
+	<li>
+		<a href="#/routes/{{route}}/{{stop}}">{{route}} / {{stop}}</a>
+	</li>
 	{{/favorites}}
 </ul>
 {{^favorites}}

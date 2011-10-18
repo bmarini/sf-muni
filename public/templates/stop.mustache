@@ -1,7 +1,7 @@
 {{#response}}
 {{#predictions}}
 <a href="#/routes/{{routeTag}}">Back</a>
-<a href="#/routes/{{routeTag}}/{{stopTag}}/favorite">Add to favorites</a>
+<a href="#/favorite?stops={{routeTag}}|{{stopTag}}">Add to favorites</a>
 <h2>{{stopTitle}}</h2>
 <h2>{{routeTitle}}</h2>
 {{#direction}}

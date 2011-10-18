@@ -4,9 +4,24 @@
     this.use(Sammy.Template);
     this.use(Sammy.Mustache);
     this.use(Sammy.Storage);
-    this.store('storage');
+    this.store('cache', {
+      type: 'local'
+    });
+    this.helper('favorite', function(route, stop) {
+      return this.cache(stop, route);
+    });
     this.helper('favorites', function() {
-      return this.storage('favorites');
+      var key, _i, _len, _ref, _results;
+      _ref = this.store('cache').keys();
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key = _ref[_i];
+        _results.push({
+          stop: key,
+          route: this.cache(key)
+        });
+      }
+      return _results;
     });
     this.before(function() {
       return console.log('>> route', this.path);
@@ -38,8 +53,16 @@
         return this.partial('templates/stop.mustache');
       });
     });
+    this.get('#/favorite', function(app) {
+      var stop, _i, _len, _ref;
+      _ref = $.makeArray(app.params.stops);
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        stop = _ref[_i];
+        this.favorite.apply(this, stop.split('|'));
+      }
+      return this.redirect('#/favorites');
+    });
     this.get('#/favorites', function(app) {
-      console.log(this.favorites());
       return this.partial('templates/favorites.mustache');
     });
     return this.get('#/', function(app) {
