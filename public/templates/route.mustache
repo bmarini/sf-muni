@@ -2,15 +2,24 @@
 {{#route}}
 <h2 style="background-color:#{{color}};color:#{{oppositeColor}};">{{title}}</h2>
 <a href="#/routes">Back</a>
-{{#direction}}
-<h3>{{title}}</h3>
 <ul>
-	{{#stop}}
+	{{#direction}}
 	<li>
-		<a href="#/routes/{{route}}/{{tag}}">{{title}}</a>
+		<a href="#{{tag}}">{{name}}</a>
 	</li>
-	{{/stop}}
+	{{/direction}}
 </ul>
+{{#direction}}
+<section id="{{tag}}">
+	<h3>{{title}}</h3>
+	<ul>
+		{{#stop}}
+		<li>
+			<a href="#/routes/{{route}}/{{tag}}">{{title}}</a>
+		</li>
+		{{/stop}}
+	</ul>
+</section>
 {{/direction}}
 {{/route}}
 <p>{{copyright}}</p>
